@@ -8,6 +8,9 @@ This file serves as context for Gemini regarding the technical stack, architectu
 - **Database ORM:** SQLAlchemy
 - **Data Validation & Serialization:** Pydantic (v2)
 - **Database:** PostgreSQL (Hosted on Supabase)
+  - **Connection:** Managed via SQLAlchemy. Uses the Supabase connection pooler URL (port 6543) for serverless environments to prevent connection exhaustion.
+  - **Configuration:** `DATABASE_URL` loaded from a `.env` file using `pydantic-settings`.
+  - **Dependency Injection:** Database sessions provided to controllers/usecases via a `get_db` FastAPI dependency (typically defined in `database.py`).
 - **Authentication:** AWS Cognito
 
 ## Layered Architecture Structure
