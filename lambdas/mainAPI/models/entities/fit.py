@@ -13,4 +13,4 @@ class FitEntity(Base):
     createdAt = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     user = relationship("UserEntity", back_populates="fits")
-    fit_clothes = relationship("FitClothesEntity", back_populates="fit")
+    fit_clothes = relationship("FitClothesEntity", back_populates="fit", cascade="all, delete-orphan")

@@ -1,25 +1,43 @@
+from fastapi import HTTPException
+from botocore.exceptions import ClientError
+from utils.jsonReturnUtil import jsonResponse
 from repositories.fitsRepository import FitsRepository
-from utils.jsonReturnUtil import (
-    jsonResponse,
-)
-from botocore.exceptions import (
-    ClientError,
-)
-
+from models.dtos.fit import FitCreate, FitUpdate
 
 class FitsUsecase:
     def __init__(self, fitRepo: FitsRepository):
-        self.db = fitRepo  # This would be the FitRepository instance
+        self.repo = fitRepo
 
     def getAllFits(self):
         try:
-            fits = self.db.getAllFits()
+            fits = self.repo.getAllFits()
             return jsonResponse(fits, key="fits")
         except ClientError as err:
-            # Handle specific client errors or re-raise
             raise err
         except Exception as e:
-            # Handle other potential exceptions
             raise e
 
-    # Add other use case methods here (e.g., create_fit, get_fit_by_id, update_fit, delete_fit)
+    def createFit(self, fit: FitCreate):
+        try:
+            new_fit = self.repo.createFit(fit)
+            return jsonResponse(new_fit, key="fit")
+        except Exception as err:
+            raise HTTPException(status_code=400, detail=str(err))
+
+    def updateFit(self, fit_id: str, fit: FitUpdate):
+        try:
+            updated_fit = self.repo.updateFit(fit_id, fit)
+            if not updated_fit:
+                raise HTTPException(status_code=404, detail="Fit not found")
+            return jsonResponse(updated_fit, key="fit")
+        except Exception as err:
+            raise HTTPException(status_code=400, detail=str(err))
+
+    def deleteFit(self, fit_id: str):
+        try:
+            deleted_fit = self.repo.deleteFit(fit_id)
+            if not deleted_fit:
+                raise HTTPException(status_code=404, detail="Fit not found")
+            return jsonResponse({"message": "Fit deleted successfully"}, key="data")
+        except Exception as err:
+            raise HTTPException(status_code=400, detail=str(err))

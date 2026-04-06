@@ -13,5 +13,5 @@ class ClothesEntity(Base):
     price = Column(Numeric(10, 2), nullable=True)
     imageKey = Column(String, nullable=True)
 
-    user_clothes = relationship("UserClothesEntity", back_populates="clothes")
-    fit_clothes = relationship("FitClothesEntity", back_populates="clothes")
+    user_clothes = relationship("UserClothesEntity", back_populates="clothes", cascade="all, delete-orphan")
+    fit_clothes = relationship("FitClothesEntity", back_populates="clothes", cascade="all, delete-orphan")

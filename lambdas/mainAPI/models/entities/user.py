@@ -15,6 +15,6 @@ class UserEntity(Base):
     confirmed: Mapped[bool] = mapped_column(default=True)
     profileImagekey = Column(String, nullable=True)
 
-    user_clothes = relationship("UserClothesEntity", back_populates="user")
-    fits = relationship("FitEntity", back_populates="user")
+    user_clothes = relationship("UserClothesEntity", back_populates="user", cascade="all, delete-orphan")
+    fits = relationship("FitEntity", back_populates="user", cascade="all, delete-orphan")
 
