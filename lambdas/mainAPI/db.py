@@ -1,0 +1,57 @@
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import NullPool
+from dotenv import load_dotenv
+import os
+
+from models.entities.base import Base
+from models.entities.user import UserEntity
+from models.entities.clothes import ClothesEntity
+from models.entities.user_clothes import UserClothesEntity
+from models.entities.fit import FitEntity
+from models.entities.fit_clothes import FitClothesEntity
+
+# Load environment variables from .env
+load_dotenv()
+
+# Fetch variables
+USER = os.getenv("user")
+PASSWORD = os.getenv("password")
+HOST = os.getenv("host")
+PORT = os.getenv("port")
+DBNAME = os.getenv("dbname")
+
+# Construct the SQLAlchemy connection string
+DATABASE_URL = (
+    f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?sslmode=require"
+)
+
+# If using Transaction Pooler or Session Pooler, we want to ensure we disable SQLAlchemy client side pooling -
+engine = create_engine(DATABASE_URL, poolclass=NullPool)
+
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+
+# Function to create tables (call this on application startup)
+def create_tables():
+    print("Creating database tables...")
+    Base.metadata.create_all(bind=engine)
+    print("Database tables created.")
+
+
+# Dependency to get a database session
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+# Test the connection
+try:
+    with engine.connect() as connection:
+        print("Connection successful!")
+except Exception as e:
+    print(f"Failed to connect: {e}")
+
