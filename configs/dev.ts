@@ -3,7 +3,7 @@ const commons = {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,
   },
-  stage: "template-dev",
+  stage: "ohara-dev",
 };
 
 const Stateful = {

@@ -3,7 +3,7 @@ import * as s3 from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 import { BaseConstructProps } from '../../types';
 
-export interface S3ConstructProps extends BaseConstructProps {}
+export interface S3ConstructProps extends BaseConstructProps { }
 
 export class S3Construct extends Construct {
   public dataBucket: s3.Bucket;

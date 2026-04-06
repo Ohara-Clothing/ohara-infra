@@ -31,12 +31,15 @@ export function setupEnvironment(
     {
       ...envConfig.Stateless,
       crossRegionReferences: true,
-      // Uncomment and pass props from statefulStack here when implemented
-      // dataBucket: statefulStack.s3Construct.dataBucket,
-      // dynamodbTable: statefulStack.dynamoDbConstruct.dataDb,
-      // userPool: statefulStack.cognitoConstruct.userPool,
-      // userPoolClient: statefulStack.cognitoConstruct.userPoolClient,
+      dataBucket: statefulStack.s3Construct.dataBucket,
+      userPool: statefulStack.cognitoConstruct.userPool,
+      userPoolClient: statefulStack.cognitoConstruct.userPoolClient,
       corsOrigins: envConfig.Stateless.corsOrigins,
+      dbUser: envConfig.Stateless.dbUser,
+      dbPassword: envConfig.Stateless.dbPassword,
+      dbHost: envConfig.Stateless.dbHost,
+      dbPort: envConfig.Stateless.dbPort,
+      dbName: envConfig.Stateless.dbName,
     },
   );
 
@@ -46,9 +49,8 @@ export function setupEnvironment(
     {
       ...envConfig.Global,
       crossRegionReferences: true,
-      // Uncomment and pass props from statelessStack here when implemented
-      // apiEndpoint: statelessStack.apiEndpoint,
-      // websiteBucket: statelessStack.websiteBucket,
+      apiEndpoint: statelessStack.apiGatewayConstruct.api.apiEndpoint,
+      frontendBucket: statefulStack.s3Construct.assetsBucket, // Using assetsBucket for frontend
     },
   );
 
