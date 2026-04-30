@@ -1,3 +1,3 @@
 class S3KeyConstants:
-    USER_PROFILE_DIR = "users/{user_id}/profile.{extension}"
-    CLOTHES_DIR = "clothes/{clothes_id}/image.{extension}"
+    USER_PROFILE_IMAGE = "users/{user_id}/profile"
+    CLOTHES_IMAGE = "clothes/{clothes_id}/image"

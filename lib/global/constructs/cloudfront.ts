@@ -7,18 +7,21 @@ import { Fn } from "aws-cdk-lib";
 interface CloudFrontConstructProps {
   stage: string;
   websiteBucket: s3.Bucket;
+  dataBucket: s3.Bucket;
   apiEndpoint: string;
 }
 
 export class CloudFrontConstruct extends Construct {
-  private webDistribution: cloudfront.Distribution;
-  private apiDistribution: cloudfront.Distribution;
+  public webDistribution: cloudfront.Distribution;
+  public apiDistribution: cloudfront.Distribution;
+  public dataDistribution: cloudfront.Distribution;
 
   constructor(scope: Construct, id: string, props: CloudFrontConstructProps) {
     super(scope, id);
 
     this.createWebDistribution(props);
     this.createApiDistribution(props);
+    this.createDataDistribution(props);
   }
 
   private createWebDistribution(props: CloudFrontConstructProps) {
@@ -62,6 +65,21 @@ export class CloudFrontConstruct extends Construct {
           viewerProtocolPolicy:
             cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
           cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
+        },
+      },
+    );
+  }
+
+  private createDataDistribution(props: CloudFrontConstructProps): void {
+    this.dataDistribution = new cloudfront.Distribution(
+      this,
+      `${props.stage}-Data-Cloudfront-Distribution`,
+      {
+        defaultBehavior: {
+          origin: new origins.S3Origin(props.dataBucket),
+          viewerProtocolPolicy:
+            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+          cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
         },
       },
     );

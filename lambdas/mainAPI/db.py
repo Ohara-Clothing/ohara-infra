@@ -7,7 +7,6 @@ import os
 from models.entities.base import Base
 from models.entities.user import UserEntity
 from models.entities.clothes import ClothesEntity
-from models.entities.user_clothes import UserClothesEntity
 from models.entities.fit import FitEntity
 from models.entities.fit_clothes import FitClothesEntity
 

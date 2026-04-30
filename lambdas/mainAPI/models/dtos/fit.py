@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from datetime import datetime
 
 class FitBase(BaseModel):
@@ -7,12 +7,16 @@ class FitBase(BaseModel):
     description: Optional[str] = None
 
 class FitCreate(FitBase):
-    fitId: str
-    userId: str
+    clothesIds: list[str] = Field(default_factory=list)
+
+
+class FitClothesUpdate(BaseModel):
+    clothesIds: list[str]
 
 class FitUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
+    clothesIds: Optional[list[str]] = None
 
 class Fit(FitBase):
     fitId: str

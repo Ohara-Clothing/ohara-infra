@@ -12,7 +12,7 @@ from models.dtos.user import (
 class AWS_Cognito:
     def __init__(self):
         load_dotenv()
-        self.cognitoRegion = os.getenv("REGION", "ap-southeast-1")
+        self.cognitoRegion = os.getenv("AWS_REGION", "ap-southeast-1")
         self.cognitoClient = boto3.client("cognito-idp", region_name=self.cognitoRegion)
         self.userPoolId = os.getenv("COGNITO_USER_POOL_ID")
         self.cognitoAppClientId = os.getenv("COGNITO_APP_CLIENT_ID")

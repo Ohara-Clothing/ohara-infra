@@ -8,6 +8,8 @@ from models.dtos.user import (
     UserLogin,
     UserConfirm,
     UserDelete,
+    UserProfileUpdate,
+    UserProfileResponse,
 )
 
 from usecases.authUsecase import AuthUsecase
@@ -16,6 +18,24 @@ from services.AWS.cognitoService import AWS_Cognito
 from db import get_db
 
 authRouter = APIRouter()
+
+USER_PROFILE_EXAMPLE = {
+    "user": {
+        "userId": "094a652c-c0c1-7004-9f61-9deb0e0fed8c",
+        "username": "brenbrenbren",
+        "email": "breindelm6@gmail.com",
+        "createdAt": "2026-04-30T04:52:15.688832Z",
+        "confirmed": True,
+        "description": "Casual home wear",
+        "style": "streetwear",
+        "favoriteClothesIds": [
+            "2aa5ac58-9537-4a19-8cbe-77b2c35229d9"
+        ],
+        "pinnedFitIds": [
+            "be2dc770-cdeb-435b-911f-bdb80ec7312a"
+        ],
+    }
+}
 
 @authRouter.get("/getUsers")
 async def getUser(
@@ -150,6 +170,61 @@ async def confirmForgetPass(
         repo = AuthRepository(db)
         uc = AuthUsecase(cognito, repo)
         return uc.confirmForgotPassword(credentials)
+    except ClientError as err:
+        errorMessage = err.response["Error"]["Message"]
+        raise HTTPException(status_code=400, detail=errorMessage)
+
+
+@authRouter.get(
+    "/profile",
+    response_model=UserProfileResponse,
+    responses={
+        200: {
+            "content": {
+                "application/json": {
+                    "example": USER_PROFILE_EXAMPLE
+                }
+            }
+        }
+    },
+)
+async def getProfile(
+    request: Request,
+    cognito: AWS_Cognito = Depends(AWS_Cognito),
+    db: Session = Depends(get_db),
+):
+    try:
+        repo = AuthRepository(db)
+        uc = AuthUsecase(cognito, repo)
+        return uc.getMyProfile(request.headers.get("Authorization"))
+    except ClientError as err:
+        errorMessage = err.response["Error"]["Message"]
+        raise HTTPException(status_code=400, detail=errorMessage)
+
+
+@authRouter.patch(
+    "/profile",
+    response_model=UserProfileResponse,
+    responses={
+        200: {
+            "content": {
+                "application/json": {
+                    "example": USER_PROFILE_EXAMPLE
+                }
+            }
+        }
+    },
+)
+async def updateProfile(
+    profile: UserProfileUpdate,
+    request: Request,
+    cognito: AWS_Cognito = Depends(AWS_Cognito),
+    db: Session = Depends(get_db),
+):
+    try:
+        repo = AuthRepository(db)
+        uc = AuthUsecase(cognito, repo)
+        return uc.updateMyProfile(request.headers.get("Authorization"), profile)
     except ClientError as err:
         errorMessage = err.response["Error"]["Message"]
         raise HTTPException(status_code=400, detail=errorMessage)

@@ -23,4 +23,5 @@ export interface StatelessStackProps extends BaseStackProps {
 export interface GlobalStackProps extends BaseStackProps {
   apiEndpoint: string;
   frontendBucket: s3.Bucket;
+  dataBucket: s3.Bucket;
 }
