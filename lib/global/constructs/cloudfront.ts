@@ -6,31 +6,43 @@ import { Fn } from "aws-cdk-lib";
 
 interface CloudFrontConstructProps {
   stage: string;
-  websiteBucket: s3.Bucket;
-  dataBucket: s3.Bucket;
-  apiEndpoint: string;
+  websiteBucket?: s3.Bucket;
+  dataBucket?: s3.Bucket;
+  apiEndpoint?: string;
 }
 
 export class CloudFrontConstruct extends Construct {
-  public webDistribution: cloudfront.Distribution;
-  public apiDistribution: cloudfront.Distribution;
-  public dataDistribution: cloudfront.Distribution;
+  public webDistribution?: cloudfront.Distribution;
+  public apiDistribution?: cloudfront.Distribution;
+  public dataDistribution?: cloudfront.Distribution;
 
   constructor(scope: Construct, id: string, props: CloudFrontConstructProps) {
     super(scope, id);
 
-    this.createWebDistribution(props);
-    this.createApiDistribution(props);
-    this.createDataDistribution(props);
+    if (props.websiteBucket) {
+      this.createWebDistribution(props);
+    }
+
+    if (props.apiEndpoint) {
+      this.createApiDistribution(props);
+    }
+
+    if (props.dataBucket) {
+      this.createDataDistribution(props);
+    }
   }
 
   private createWebDistribution(props: CloudFrontConstructProps) {
+    if (!props.websiteBucket) {
+      return;
+    }
+
     this.webDistribution = new cloudfront.Distribution(
       this,
       `${props.stage}-Web-Cloudfront-Distribution`,
       {
         defaultBehavior: {
-          origin: new origins.S3StaticWebsiteOrigin(props.websiteBucket),
+          origin: origins.S3BucketOrigin.withOriginAccessControl(props.websiteBucket),
           viewerProtocolPolicy:
             cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         },
@@ -52,6 +64,10 @@ export class CloudFrontConstruct extends Construct {
   }
 
   private createApiDistribution(props: CloudFrontConstructProps): void {
+    if (!props.apiEndpoint) {
+      return;
+    }
+
     const urlParts = Fn.split("://", props.apiEndpoint);
     const domainAndPath = Fn.select(1, urlParts);
     const domain = Fn.select(0, Fn.split("/", domainAndPath));
@@ -71,12 +87,16 @@ export class CloudFrontConstruct extends Construct {
   }
 
   private createDataDistribution(props: CloudFrontConstructProps): void {
+    if (!props.dataBucket) {
+      return;
+    }
+
     this.dataDistribution = new cloudfront.Distribution(
       this,
       `${props.stage}-Data-Cloudfront-Distribution`,
       {
         defaultBehavior: {
-          origin: new origins.S3Origin(props.dataBucket),
+          origin: origins.S3BucketOrigin.withOriginAccessControl(props.dataBucket),
           viewerProtocolPolicy:
             cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
           cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,

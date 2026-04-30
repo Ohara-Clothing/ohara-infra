@@ -50,7 +50,6 @@ export function setupEnvironment(
       ...envConfig.Global,
       crossRegionReferences: true,
       apiEndpoint: statelessStack.apiGatewayConstruct.api.apiEndpoint,
-      frontendBucket: statefulStack.s3Construct.assetsBucket, // Using assetsBucket for frontend
     },
   );
 

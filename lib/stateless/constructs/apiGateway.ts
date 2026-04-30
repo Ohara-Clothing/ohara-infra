@@ -117,12 +117,14 @@ export class ApiGatewayConstruct extends Construct {
       path: "/clothes",
       methods: [api.HttpMethod.GET],
       integration: props.mainLambdaIntegration,
+      authorizer: this.authorizer,
     });
 
     this.api.addRoutes({
       path: "/clothes",
       methods: [api.HttpMethod.POST],
       integration: props.mainLambdaIntegration,
+      authorizer: this.authorizer,
     });
 
     this.api.addRoutes({
@@ -134,6 +136,64 @@ export class ApiGatewayConstruct extends Construct {
 
     this.api.addRoutes({
       path: "/clothes/{clothes_id}",
+      methods: [api.HttpMethod.DELETE],
+      integration: props.mainLambdaIntegration,
+      authorizer: this.authorizer,
+    });
+
+    // PROFILE ROUTES ===============================
+    this.api.addRoutes({
+      path: "/profile",
+      methods: [api.HttpMethod.GET],
+      integration: props.mainLambdaIntegration,
+      authorizer: this.authorizer,
+    });
+
+    this.api.addRoutes({
+      path: "/profile",
+      methods: [api.HttpMethod.PATCH],
+      integration: props.mainLambdaIntegration,
+      authorizer: this.authorizer,
+    });
+
+    // IMAGE ROUTES =================================
+    this.api.addRoutes({
+      path: "/images/profile/upload-url",
+      methods: [api.HttpMethod.GET],
+      integration: props.mainLambdaIntegration,
+      authorizer: this.authorizer,
+    });
+
+    this.api.addRoutes({
+      path: "/images/profile/view-url",
+      methods: [api.HttpMethod.GET],
+      integration: props.mainLambdaIntegration,
+      authorizer: this.authorizer,
+    });
+
+    this.api.addRoutes({
+      path: "/images/profile",
+      methods: [api.HttpMethod.DELETE],
+      integration: props.mainLambdaIntegration,
+      authorizer: this.authorizer,
+    });
+
+    this.api.addRoutes({
+      path: "/images/clothes/{clothes_id}/upload-url",
+      methods: [api.HttpMethod.GET],
+      integration: props.mainLambdaIntegration,
+      authorizer: this.authorizer,
+    });
+
+    this.api.addRoutes({
+      path: "/images/clothes/{clothes_id}/view-url",
+      methods: [api.HttpMethod.GET],
+      integration: props.mainLambdaIntegration,
+      authorizer: this.authorizer,
+    });
+
+    this.api.addRoutes({
+      path: "/images/clothes/{clothes_id}",
       methods: [api.HttpMethod.DELETE],
       integration: props.mainLambdaIntegration,
       authorizer: this.authorizer,
@@ -144,12 +204,14 @@ export class ApiGatewayConstruct extends Construct {
       path: "/fits",
       methods: [api.HttpMethod.GET],
       integration: props.mainLambdaIntegration,
+      authorizer: this.authorizer,
     });
 
     this.api.addRoutes({
       path: "/fits",
       methods: [api.HttpMethod.POST],
       integration: props.mainLambdaIntegration,
+      authorizer: this.authorizer,
     });
 
     this.api.addRoutes({
@@ -162,6 +224,13 @@ export class ApiGatewayConstruct extends Construct {
     this.api.addRoutes({
       path: "/fits/{fits_id}",
       methods: [api.HttpMethod.DELETE],
+      integration: props.mainLambdaIntegration,
+      authorizer: this.authorizer,
+    });
+
+    this.api.addRoutes({
+      path: "/fits/{fits_id}/clothes",
+      methods: [api.HttpMethod.PUT],
       integration: props.mainLambdaIntegration,
       authorizer: this.authorizer,
     });
