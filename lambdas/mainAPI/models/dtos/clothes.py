@@ -1,3 +1,4 @@
+import uuid
 from typing import Optional
 from pydantic import BaseModel, ConfigDict
 from decimal import Decimal
@@ -12,7 +13,7 @@ class ClothesBase(BaseModel):
 
 
 class ClothesCreate(ClothesBase):
-    pass
+    imageKey: Optional[str] = None
 
 
 class ClothesUpdate(ClothesBase):
@@ -20,6 +21,6 @@ class ClothesUpdate(ClothesBase):
 
 
 class Clothes(ClothesBase):
-    clothesId: str
+    clothesId: uuid.UUID
+    imageKey: Optional[str] = None
     model_config = ConfigDict(from_attributes=True)
-

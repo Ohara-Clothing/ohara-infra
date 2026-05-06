@@ -18,14 +18,7 @@ async def get_user_upload_url(
     uc = ImageUsecase(s3, AuthRepository(db), ClothesRepository(db))
     return uc.get_user_profile_upload_url(request.headers.get("Authorization"), content_type)
 
-@imageRouter.get("/images/profile/view-url")
-async def get_profile_view_url(
-    request: Request,
-    s3: AWS_S3 = Depends(AWS_S3),
-    db: Session = Depends(get_db),
-):
-    uc = ImageUsecase(s3, AuthRepository(db), ClothesRepository(db))
-    return uc.get_user_profile_view_url(request.headers.get("Authorization"))
+
 
 @imageRouter.delete("/images/profile")
 async def delete_profile_image(
@@ -46,16 +39,6 @@ async def get_clothes_upload_url(
 ):
     uc = ImageUsecase(s3, AuthRepository(db), ClothesRepository(db))
     return uc.get_clothes_upload_url(request.headers.get("Authorization"), clothes_id, content_type)
-
-@imageRouter.get("/images/clothes/{clothes_id}/view-url")
-async def get_clothes_view_url(
-    request: Request,
-    clothes_id: str,
-    s3: AWS_S3 = Depends(AWS_S3),
-    db: Session = Depends(get_db),
-):
-    uc = ImageUsecase(s3, AuthRepository(db), ClothesRepository(db))
-    return uc.get_clothes_view_url(request.headers.get("Authorization"), clothes_id)
 
 @imageRouter.delete("/images/clothes/{clothes_id}")
 async def delete_clothes_image(

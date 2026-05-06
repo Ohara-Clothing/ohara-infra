@@ -3,20 +3,17 @@ import { Construct } from 'constructs';
 import { StatefulStackProps } from '../types';
 import { S3Construct } from './constructs/s3';
 import { CognitoConstruct } from './constructs/cognito';
-import { CloudFrontConstruct } from '../global/constructs/cloudfront';
 
 export class StatefulStack extends cdk.Stack {
   // Public properties exposed for inter-stack references
   public s3Construct: S3Construct;
   public cognitoConstruct: CognitoConstruct;
-  public cloudfrontConstruct: CloudFrontConstruct;
 
   constructor(scope: Construct, id: string, props: StatefulStackProps) {
     super(scope, id, props);
 
     this.createS3Construct(props);
     this.createCognitoConstruct(props);
-    this.createCloudFrontConstruct(props);
     this.createOutputs();
   }
 
@@ -36,14 +33,6 @@ export class StatefulStack extends cdk.Stack {
     );
   }
 
-  private createCloudFrontConstruct(props: StatefulStackProps): void {
-    this.cloudfrontConstruct = new CloudFrontConstruct(this, `${props.stage}-CloudFront`, {
-      stage: props.stage,
-      websiteBucket: this.s3Construct.assetsBucket,
-      dataBucket: this.s3Construct.dataBucket,
-    });
-  }
-
   private createOutputs(): void {
     new cdk.CfnOutput(this, 'S3-Data-Bucket-Name', {
       value: this.s3Construct.dataBucket.bucketName,
@@ -60,17 +49,5 @@ export class StatefulStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'Cognito-UserPool-ClientId', {
       value: this.cognitoConstruct.userPoolClient.userPoolClientId,
     });
-
-    if (this.cloudfrontConstruct.webDistribution) {
-      new cdk.CfnOutput(this, 'Web-CloudFront-Distribution-DomainName', {
-        value: this.cloudfrontConstruct.webDistribution.distributionDomainName,
-      });
-    }
-
-    if (this.cloudfrontConstruct.dataDistribution) {
-      new cdk.CfnOutput(this, 'Data-CloudFront-Distribution-DomainName', {
-        value: this.cloudfrontConstruct.dataDistribution.distributionDomainName,
-      });
-    }
   }
 }

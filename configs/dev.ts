@@ -10,6 +10,7 @@ const Stateful = {
   ...commons,
   env: {
     ...commons.env,
+    region: "ap-southeast-1",
   },
 };
 

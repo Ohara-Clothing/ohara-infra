@@ -3,7 +3,8 @@ from botocore.exceptions import ClientError
 from utils.jsonReturnUtil import jsonResponse
 from repositories.fitsRepository import FitsRepository
 from repositories.authRepository import AuthRepository
-from models.dtos.fit import FitCreate, FitUpdate, FitClothesUpdate
+from models.dtos.fit import FitCreate, FitUpdate, FitClothesUpdate, FitResponse, FitClothesResponse
+from models.dtos.clothes import Clothes
 from utils.jwtUtil import userIdFromAccessToken, usernameFromAccessToken
 
 class FitsUsecase:
@@ -11,33 +12,23 @@ class FitsUsecase:
         self.repo = fitRepo
         self.user_repo = userRepo
 
-    def getAllFits(self, authorization_header: str | None):
+    def getAllFits(self, authorization_header: str | None) -> jsonResponse:
         try:
             user = self._resolve_current_user(authorization_header)
-            fits = self.repo.getAllFits(str(user.userId))
+            fits_entities = self.repo.getAllFits(str(user.userId))
+            
             fits_payload = []
-            for fit in fits:
-                fits_payload.append(
-                    {
-                        "fitId": str(fit.fitId),
-                        "userId": str(fit.userId),
-                        "name": fit.name,
-                        "description": fit.description,
-                        "createdAt": fit.createdAt,
-                        "clothes": [
-                            {
-                                "clothesId": str(fit_clothes.clothes.clothesId),
-                                "clothesType": fit_clothes.clothes.clothesType,
-                                "color": fit_clothes.clothes.color,
-                                "size": fit_clothes.clothes.size,
-                                "brand": fit_clothes.clothes.brand,
-                                "price": fit_clothes.clothes.price,
-                            }
-                            for fit_clothes in fit.fit_clothes
-                            if fit_clothes.clothes
-                        ],
-                    }
-                )
+            for fit_entity in fits_entities:
+                clothes_responses = []
+                for fit_clothes_entity in fit_entity.fit_clothes:
+                    if fit_clothes_entity.clothes:
+                        clothes_dto = Clothes.model_validate(fit_clothes_entity.clothes)
+                        clothes_responses.append(FitClothesResponse(**clothes_dto.model_dump(), fitClothesId=fit_clothes_entity.fitClothesId))
+                
+                fit_response_data = FitResponse.model_validate(fit_entity)
+                fit_response_data.clothes = clothes_responses
+                fits_payload.append(fit_response_data.model_dump(mode='json'))
+            
             return jsonResponse(fits_payload, key="fits")
         except ClientError as err:
             raise err

@@ -17,6 +17,7 @@ class ClothesEntity(Base):
     size: Mapped[str] = mapped_column(String, nullable=True)
     brand: Mapped[str] = mapped_column(String, nullable=True)
     price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=True)
+    imageKey: Mapped[str] = mapped_column(String, nullable=True)
 
     user = relationship("UserEntity", back_populates="clothes")
     fit_clothes = relationship(

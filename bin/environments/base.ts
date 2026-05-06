@@ -50,8 +50,21 @@ export function setupEnvironment(
       ...envConfig.Global,
       crossRegionReferences: true,
       apiEndpoint: statelessStack.apiGatewayConstruct.api.apiEndpoint,
+      dataBucket: {
+        bucketName: statefulStack.s3Construct.dataBucket.bucketName,
+        bucketArn: statefulStack.s3Construct.dataBucket.bucketArn,
+        bucketRegion: envConfig.Stateful.env.region,
+      },
+      assetsBucket: {
+        bucketName: statefulStack.s3Construct.assetsBucket.bucketName,
+        bucketArn: statefulStack.s3Construct.assetsBucket.bucketArn,
+        bucketRegion: envConfig.Stateful.env.region,
+      },
     },
   );
+
+  globalStack.addDependency(statefulStack);
+  globalStack.addDependency(statelessStack);
 
   return { statefulStack, statelessStack, globalStack };
 }

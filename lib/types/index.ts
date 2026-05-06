@@ -11,7 +11,10 @@ export interface BaseStackProps extends cdk.StackProps {
   stage: string;
 }
 
-export interface StatefulStackProps extends BaseStackProps { }
+export interface StatefulStackProps extends BaseStackProps {
+  dataOacArn?: string;
+  assetsOacArn?: string;
+}
 
 export interface StatelessStackProps extends BaseStackProps {
   dataBucket: s3.Bucket;
@@ -20,6 +23,14 @@ export interface StatelessStackProps extends BaseStackProps {
   corsOrigins?: string[];
 }
 
+export interface IBucketAttributes {
+  bucketName: string;
+  bucketArn: string;
+  bucketRegion: string;
+}
+
 export interface GlobalStackProps extends BaseStackProps {
   apiEndpoint: string;
+  dataBucket?: IBucketAttributes;
+  assetsBucket?: IBucketAttributes;
 }
