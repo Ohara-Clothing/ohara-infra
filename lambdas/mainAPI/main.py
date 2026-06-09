@@ -1,4 +1,3 @@
-import os
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,13 +7,13 @@ from controllers.appRouter import app_router
 app = FastAPI()
 handler = Mangum(app, lifespan="off")
 
-# Parse CORS origins from environment
-cors_origins = os.getenv("CORS_ORIGINS", "")
-allowed_origins = [origin.strip() for origin in cors_origins.split(",") if origin.strip()] if cors_origins else ["http://localhost:5173"]
+origins = [
+    "http://localhost:5173",  # e.g., Vite default
+]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
