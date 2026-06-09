@@ -9,6 +9,7 @@ handler = Mangum(app, lifespan="off")
 
 origins = [
     "http://localhost:5173",  # e.g., Vite default
+    "https://d372i9tj4nkg07.cloudfront.net",
 ]
 
 app.add_middleware(
