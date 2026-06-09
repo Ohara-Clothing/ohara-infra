@@ -9,7 +9,7 @@ from models.dtos.fit import FitCreate, FitUpdate, FitClothesUpdate
 fitsRouter = APIRouter()
 
 
-@fitsRouter.get("/fits/")
+@fitsRouter.get("/fits")
 async def get_all_fits(request: Request, db: Session = Depends(get_db)):
     fit_repo = FitsRepository(db)
     user_repo = AuthRepository(db)
@@ -17,7 +17,7 @@ async def get_all_fits(request: Request, db: Session = Depends(get_db)):
     return fit_usecase.getAllFits(request.headers.get("Authorization"))
 
 
-@fitsRouter.post("/fits/")
+@fitsRouter.post("/fits")
 async def create_fit(
     fit: FitCreate,
     request: Request,
