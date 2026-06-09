@@ -21,6 +21,12 @@ export interface StatelessStackProps extends BaseStackProps {
   userPool: cognito.UserPool;
   userPoolClient: cognito.UserPoolClient;
   corsOrigins?: string[];
+  dbUser?: string;
+  dbPassword?: string;
+  dbHost?: string;
+  dbPort?: string;
+  dbName?: string;
+  databaseUrl?: string;
 }
 
 export interface IBucketAttributes {

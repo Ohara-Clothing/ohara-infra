@@ -29,6 +29,13 @@ export class StatelessStack extends cdk.Stack {
         dataBucket: props.dataBucket,
         userPool: props.userPool,
         userPoolClient: props.userPoolClient,
+        corsOrigins: props.corsOrigins,
+        dbUser: props.dbUser,
+        dbPassword: props.dbPassword,
+        dbHost: props.dbHost,
+        dbPort: props.dbPort,
+        dbName: props.dbName,
+        databaseUrl: props.databaseUrl,
       },
     );
   }

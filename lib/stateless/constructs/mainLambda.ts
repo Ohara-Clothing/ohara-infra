@@ -15,6 +15,12 @@ export interface MainLambdaConstructProps extends BaseConstructProps {
   userPool: cognito.IUserPool;
   userPoolClient: cognito.IUserPoolClient;
   corsOrigins?: string[];
+  dbUser?: string;
+  dbPassword?: string;
+  dbHost?: string;
+  dbPort?: string;
+  dbName?: string;
+  databaseUrl?: string;
 }
 
 export class MainLambdaConstruct extends Construct {
@@ -63,8 +69,16 @@ export class MainLambdaConstruct extends Construct {
           USER_POOL_ID: props.userPool.userPoolId,
           USER_POOL_CLIENT_ID: props.userPoolClient.userPoolClientId,
           DATA_BUCKET_NAME: props.dataBucket.bucketName,
+          COGNITO_USER_POOL_ID: props.userPool.userPoolId,
+          COGNITO_APP_CLIENT_ID: props.userPoolClient.userPoolClientId,
+          S3_BUCKET_NAME: props.dataBucket.bucketName,
           CORS_ORIGINS: props.corsOrigins ? props.corsOrigins.join(',') : '',
-          DATABASE_URL: process.env.DATABASE_URL || '',
+          DATABASE_URL: props.databaseUrl || process.env.DATABASE_URL || '',
+          user: props.dbUser || '',
+          password: props.dbPassword || '',
+          host: props.dbHost || '',
+          port: props.dbPort || '',
+          dbname: props.dbName || '',
         },
       }
     );
@@ -76,6 +90,6 @@ export class MainLambdaConstruct extends Construct {
 
     // Grant necessary permissions to the Lambda function
     props.dataBucket.grantReadWrite(this.lambdaFunction);
-    props.userPool.grant(this.lambdaFunction, 'cognito-idp:ListUsers'); // Example, adjust permissions as needed
+    props.userPool.grant(this.lambdaFunction, 'cognito-idp:ListUsers', 'cognito-idp:AdminGetUser'); // Allow listing and retrieving user info
   }
 }
