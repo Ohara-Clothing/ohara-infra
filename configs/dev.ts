@@ -30,6 +30,12 @@ const Stateless = {
     ...commons.env,
   },
   corsOrigins: devCorsOrigins,
+  dbUser: process.env.DB_USER || process.env.user,
+  dbPassword: process.env.DB_PASSWORD || process.env.password,
+  dbHost: process.env.DB_HOST || process.env.host,
+  dbPort: process.env.DB_PORT || process.env.port,
+  dbName: process.env.DB_NAME || process.env.dbname,
+  databaseUrl: process.env.DATABASE_URL,
 };
 
 const Global = {

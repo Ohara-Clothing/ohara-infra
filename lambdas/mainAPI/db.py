@@ -21,11 +21,14 @@ if not DATABASE_URL:
     USER = os.getenv("user")
     PASSWORD = os.getenv("password")
     HOST = os.getenv("host")
-    PORT = os.getenv("port")
-    DBNAME = os.getenv("dbname")
+    PORT = os.getenv("port") or "5432"
+    DBNAME = os.getenv("dbname") or "postgres"
 
-    # Construct the SQLAlchemy connection string
-    DATABASE_URL = f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?sslmode=require"
+    if USER and HOST:
+        # Construct the SQLAlchemy connection string
+        DATABASE_URL = f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?sslmode=require"
+    else:
+        DATABASE_URL = "sqlite:///:memory:"
 
 # If using Transaction Pooler or Session Pooler, we want to ensure we disable SQLAlchemy client side pooling -
 engine = create_engine(DATABASE_URL, poolclass=NullPool)
