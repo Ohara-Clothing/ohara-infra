@@ -13,6 +13,7 @@ export class GlobalStack extends cdk.Stack {
       dataBucket: props.dataBucket,
       assetsBucket: props.assetsBucket,
       apiDomainName: props.apiDomainName,
+      cdnDomainName: props.cdnDomainName,
       certificateArn: props.certificateArn,
     });
 
