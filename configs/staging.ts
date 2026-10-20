@@ -19,7 +19,11 @@ const Stateless = {
   env: {
     ...commons.env,
   },
-  corsOrigins: ["*"],
+  corsOrigins: [
+    "https://ohara.breindel.me",
+    "https://www.ohara.breindel.me",
+    "http://localhost:5173",
+  ],
 };
 
 const Global = {

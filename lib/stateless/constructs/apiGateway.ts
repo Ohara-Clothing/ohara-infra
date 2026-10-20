@@ -35,7 +35,11 @@ export class ApiGatewayConstruct extends Construct {
     this.api = new api.HttpApi(this, `${props.stage}-ApiGateway-HttpApi`, {
       apiName: `${props.stage}-ApiGateway-HttpApi`,
       corsPreflight: {
-        allowOrigins: props.corsOrigins ?? ["*"],
+        allowOrigins: props.corsOrigins ?? [
+          "https://ohara.breindel.me",
+          "https://www.ohara.breindel.me",
+          "http://localhost:5173",
+        ],
         allowMethods: [
           api.CorsHttpMethod.GET,
           api.CorsHttpMethod.POST,
@@ -44,7 +48,15 @@ export class ApiGatewayConstruct extends Construct {
           api.CorsHttpMethod.DELETE,
           api.CorsHttpMethod.OPTIONS,
         ],
-        allowHeaders: ["Content-Type", "Authorization", "X-Api-Key"],
+        allowHeaders: [
+          "Content-Type",
+          "Authorization",
+          "X-Api-Key",
+          "Accept",
+          "X-Requested-With",
+          "Origin",
+        ],
+        allowCredentials: true,
       },
     });
   }

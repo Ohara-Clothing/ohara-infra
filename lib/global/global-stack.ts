@@ -12,6 +12,8 @@ export class GlobalStack extends cdk.Stack {
       apiEndpoint: props.apiEndpoint,
       dataBucket: props.dataBucket,
       assetsBucket: props.assetsBucket,
+      apiDomainName: props.apiDomainName,
+      certificateArn: props.certificateArn,
     });
 
     new cdk.CfnOutput(this, 'API-CloudFront-Distribution-DomainName', {

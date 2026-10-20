@@ -14,12 +14,22 @@ const Stateful = {
   },
 };
 
+const devCorsOrigins = [
+  "https://ohara.breindel.me",
+  "https://www.ohara.breindel.me",
+  "https://d1nttlz1cdwr0b.cloudfront.net",
+  "http://localhost:5173",
+  ...(process.env.ADDITIONAL_CORS_ORIGINS
+    ? process.env.ADDITIONAL_CORS_ORIGINS.split(",").map((s) => s.trim())
+    : []),
+];
+
 const Stateless = {
   ...commons,
   env: {
     ...commons.env,
   },
-  corsOrigins: ["*"],
+  corsOrigins: devCorsOrigins,
 };
 
 const Global = {
@@ -28,6 +38,8 @@ const Global = {
     ...commons.env,
     region: "us-east-1", // Keep us-east-1 for global resources like CloudFront certificates
   },
+  apiDomainName: process.env.API_DOMAIN_NAME || (process.env.API_CERTIFICATE_ARN ? "api.ohara.breindel.me" : undefined),
+  certificateArn: process.env.API_CERTIFICATE_ARN,
 };
 
 export default {
