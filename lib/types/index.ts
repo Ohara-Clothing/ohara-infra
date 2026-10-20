@@ -40,5 +40,6 @@ export interface GlobalStackProps extends BaseStackProps {
   dataBucket?: IBucketAttributes;
   assetsBucket?: IBucketAttributes;
   apiDomainName?: string;
+  cdnDomainName?: string;
   certificateArn?: string;
 }

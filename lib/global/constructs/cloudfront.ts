@@ -13,6 +13,7 @@ interface CloudFrontConstructProps {
   assetsBucket?: IBucketAttributes; // Use new interface
   apiEndpoint?: string;
   apiDomainName?: string;
+  cdnDomainName?: string;
   certificateArn?: string;
 }
 
@@ -146,13 +147,31 @@ export class CloudFrontConstruct extends Construct {
       },
     });
 
+    const cdnAliases =
+      props.cdnDomainName && props.certificateArn ? [props.cdnDomainName] : undefined;
+    const viewerCertificate: cloudfront.CfnDistribution.ViewerCertificateProperty =
+      props.cdnDomainName && props.certificateArn
+        ? {
+            acmCertificateArn: props.certificateArn,
+            sslSupportMethod: 'sni-only',
+            minimumProtocolVersion: 'TLSv1.2_2021',
+          }
+        : {
+            cloudFrontDefaultCertificate: true,
+          };
+
     this.dataDistribution = new cloudfront.CfnDistribution(
       this,
       `${props.stage}-Data-Cloudfront-Distribution`,
       {
         distributionConfig: {
+          aliases: cdnAliases,
+          viewerCertificate: viewerCertificate,
           defaultCacheBehavior: {
             cachePolicyId: cloudfront.CachePolicy.CACHING_OPTIMIZED.cachePolicyId,
+            responseHeadersPolicyId:
+              cloudfront.ResponseHeadersPolicy.CORS_ALLOW_ALL_ORIGINS
+                .responseHeadersPolicyId,
             compress: true,
             targetOriginId: `${props.stage}-DataBucketOrigin`,
             viewerProtocolPolicy: 'redirect-to-https',
@@ -160,14 +179,15 @@ export class CloudFrontConstruct extends Construct {
           enabled: true,
           httpVersion: 'http2',
           ipv6Enabled: true,
-                                                    origins: [
-                                                      {
-                                                        domainName: `${dataBucket.bucketName}.s3.${props.dataBucket.bucketRegion}.amazonaws.com`,
-                                                        id: `${props.stage}-DataBucketOrigin`,
-                                                        s3OriginConfig: {}, // Explicitly define as S3 origin
-                                                        originAccessControlId: this.dataOac!.ref,
-                                                      },
-                                                    ],        },
+          origins: [
+            {
+              domainName: `${dataBucket.bucketName}.s3.${props.dataBucket.bucketRegion}.amazonaws.com`,
+              id: `${props.stage}-DataBucketOrigin`,
+              s3OriginConfig: {}, // Explicitly define as S3 origin
+              originAccessControlId: this.dataOac!.ref,
+            },
+          ],
+        },
       },
     );
   }

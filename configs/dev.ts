@@ -45,6 +45,7 @@ const Global = {
     region: "us-east-1", // Keep us-east-1 for global resources like CloudFront certificates
   },
   apiDomainName: process.env.API_DOMAIN_NAME || (process.env.API_CERTIFICATE_ARN ? "api.ohara.breindel.me" : undefined),
+  cdnDomainName: process.env.CDN_DOMAIN_NAME || (process.env.API_CERTIFICATE_ARN ? "cdn.ohara.breindel.me" : undefined),
   certificateArn: process.env.API_CERTIFICATE_ARN,
 };
 

@@ -42,6 +42,7 @@ jobs:
         env:
           API_CERTIFICATE_ARN: ${{ secrets.API_CERTIFICATE_ARN }}
           API_DOMAIN_NAME: ${{ vars.API_DOMAIN_NAME || 'api.ohara.breindel.me' }}
+          CDN_DOMAIN_NAME: ${{ vars.CDN_DOMAIN_NAME || 'cdn.ohara.breindel.me' }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
